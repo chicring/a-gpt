@@ -1,0 +1,16 @@
+server:
+  port: 6980
+
+spring:
+    mvc:
+      async:
+        request-timeout: 60000
+    datasource:
+        driver-class-name: org.mariadb.jdbc.Driver
+        url: jdbc:mariadb://hk.hjong.cn:3306/one
+        username: one
+        password: 95aninjv
+
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
