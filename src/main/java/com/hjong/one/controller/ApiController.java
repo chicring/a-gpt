@@ -6,16 +6,13 @@ import com.hjong.one.service.AuthService;
 import com.hjong.one.service.ChannelService;
 import com.hjong.one.until.api.ApiAdapter;
 import com.hjong.one.until.api.openai.text.OpenAiReq;
-import com.hjong.one.until.api.openai.text.OpenAiResp;
 import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.validation.constraints.NotNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
-
 import java.util.Map;
 
 @Slf4j
@@ -38,13 +35,13 @@ public class ApiController {
         /*
           从数据库中验证apikey是否有效，如果有效查询key能用的渠道并返回对应的渠道信息，如果出错抛出异常
          */
-        log.info("用户输入：{}", openAiReq.getMessages().getFirst().getContent());
-
+//        log.info("用户输入：{}", openAiReq.getMessages().getFirst().getContent());
+        log.info("来自ip：{} 的请求",request.getLocalAddr());
         if (authService.validateApiKey(request.getHeader("Authorization"))){
             Channel channel = channelService.selectChannel(openAiReq.getModel());
 
             return selectorMap.get(channel.getType()).getResponse(channel,openAiReq);
-//            return apiAdapter.getResponse(channelService.selectChannel(openAiReq.getModel()),openAiReq);
+
         }else {
             return null;
         }
