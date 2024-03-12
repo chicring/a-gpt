@@ -1,7 +1,6 @@
-package com.hjong.one.until.api.openai.text;
+package com.hjong.one.util.api.openai.text;
 
 import com.alibaba.fastjson2.JSONObject;
-import com.alibaba.fastjson2.JSONWriter;
 import lombok.Data;
 import lombok.experimental.Accessors;
 

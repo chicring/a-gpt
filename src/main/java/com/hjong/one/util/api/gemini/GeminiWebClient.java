@@ -1,14 +1,14 @@
-package com.hjong.one.until.api.gemini;
+package com.hjong.one.util.api.gemini;
 
 
 import com.alibaba.fastjson2.JSONObject;
 import com.hjong.one.entity.Channel;
-import com.hjong.one.until.api.ApiAdapter;
-import com.hjong.one.until.api.gemini.text.*;
-import com.hjong.one.until.api.openai.text.OpenAiChoices;
-import com.hjong.one.until.api.openai.text.OpenAiMessage;
-import com.hjong.one.until.api.openai.text.OpenAiReq;
-import com.hjong.one.until.api.openai.text.OpenAiResp;
+import com.hjong.one.util.api.ApiAdapter;
+import com.hjong.one.util.api.gemini.text.*;
+import com.hjong.one.util.api.openai.text.OpenAiChoices;
+import com.hjong.one.util.api.openai.text.OpenAiMessage;
+import com.hjong.one.util.api.openai.text.OpenAiReq;
+import com.hjong.one.util.api.openai.text.OpenAiResp;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -17,6 +17,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import reactor.core.publisher.Flux;
 import reactor.netty.http.client.HttpClient;
 import reactor.netty.transport.ProxyProvider;
+
 import java.util.ArrayList;
 import java.util.List;
 @Slf4j
@@ -52,19 +53,73 @@ public class GeminiWebClient implements ApiAdapter {
 
     private GeminiReq OpenAiToGemini(OpenAiReq openAiReq){
         List<Item> contentsList = new ArrayList<>();
-        for(OpenAiMessage message : openAiReq.getMessages()){
+
+        int messagesCount = openAiReq.getMessages().size();
+        String lastRole = openAiReq.getMessages().getFirst().getRole();
+
+        for(int i = 0; i < messagesCount; i++) {
+            OpenAiMessage message = openAiReq.getMessages().get(i);
 
             if(message.getRole().equals("assistant")){
                 message.setRole("model");
             }
 
-            if (!message.getRole().equals("system")){
+            if(message.getRole().equals("system")){
+
+                message.setRole("user");
+
+                if(lastRole.equals("user")){
+                    Item newItem = new Item().setRole("model");
+                    newItem.setParts(List.of(new Part("好的")));
+                    contentsList.add(newItem);
+                }
+
+                lastRole = "user";
+
+                Item item = new Item().setRole(message.getRole());
+                item.setParts(List.of(new Part(message.getContent())));
+                contentsList.add(item);
+            }else {
+
+                if(lastRole.equals(message.getRole()) && i!=0){
+                    Item newItem = new Item().setRole("model");
+                    newItem.setParts(List.of(new Part("好的")));
+                    contentsList.add(newItem);
+                }
+
+                lastRole = message.getRole();
+
                 Item item = new Item().setRole(message.getRole());
                 item.setParts(List.of(new Part(message.getContent())));
                 contentsList.add(item);
             }
+
+//
+//            if(message.getRole().equals("assistant")){
+//                message.setRole("model");
+//            }
+//
+//            // 如果当前消息的角色是 "system" 并且这不是最后一条消息
+//            if (message.getRole().equals("system")) {
+//                message.setRole("user");
+//
+//                Item item = new Item().setRole(message.getRole());
+//                item.setParts(List.of(new Part(message.getContent())));
+//                contentsList.add(item);
+//                if(i == messagesCount -1){
+//                    continue;
+//                }
+//                Item newItem = new Item().setRole("model");
+//                newItem.setParts(List.of(new Part("好的")));
+//                contentsList.add(newItem);
+//            } else {
+//                Item item = new Item().setRole(message.getRole());
+//                item.setParts(List.of(new Part(message.getContent())));
+//                contentsList.add(item);
+//            }
         }
 
+        log.info(contentsList.toString());
         return new GeminiReq().setContents(contentsList)
                 .setGenerationConfig(
                         new GenerationConfig().setTemperature(openAiReq.getTemperature())
@@ -81,9 +136,9 @@ public class GeminiWebClient implements ApiAdapter {
         return new OpenAiResp().setChoices(
                     List.of(new OpenAiChoices().setMessage(
                             new OpenAiMessage().setContent(replyJson.getString("text"))
-                                    .setRole("model")
+                                    .setRole("assistant")
                     ).setDelta(new OpenAiMessage().setContent(replyJson.getString("text"))
-                            .setRole("model"))
+                            .setRole("assistant"))
                     )
                 )
                 .asJsonString();

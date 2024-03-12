@@ -1,4 +1,4 @@
-package com.hjong.one.until.api.openai.text;
+package com.hjong.one.util.api.openai.text;
 
 import lombok.Data;
 import lombok.experimental.Accessors;

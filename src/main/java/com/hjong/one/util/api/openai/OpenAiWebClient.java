@@ -1,10 +1,9 @@
-package com.hjong.one.until.api.openai;
+package com.hjong.one.util.api.openai;
 
-import com.alibaba.fastjson2.JSONObject;
 import com.hjong.one.entity.Channel;
-import com.hjong.one.until.api.ApiAdapter;
-import com.hjong.one.until.api.openai.text.OpenAiReq;
-import com.hjong.one.until.api.openai.text.OpenAiResp;
+import com.hjong.one.util.api.ApiAdapter;
+import com.hjong.one.util.api.openai.text.OpenAiReq;
+import com.hjong.one.util.api.openai.text.OpenAiResp;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;

@@ -30,7 +30,7 @@ public class GlobalExceptionHandler {
     }
 
     /**
-     *
+     * 自定义的业务异常
      */
     @ExceptionHandler(value = ServiceException.class)
     public R<Void> handleServiceException(ServiceException e){
@@ -39,12 +39,16 @@ public class GlobalExceptionHandler {
         return code != null ? R.fail(code, e.getMessage()) : R.fail(e.getMessage());
     }
 
+
     @ExceptionHandler(value = Exception.class)
     public R<Void> exceptionHandler(Exception e) {
-        log.error("发生未知异常.", e);
+        log.error("发生未知异常.",e);
         return R.fail(e.getMessage());
     }
 
+    /**
+     * webClint请求异常
+     */
     @ExceptionHandler(value = WebClientResponseException.class)
     public R<Void> handleWebClientResponseException(WebClientResponseException e){
         HttpStatus status = (HttpStatus) e.getStatusCode();

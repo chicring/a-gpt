@@ -1,4 +1,4 @@
-package com.hjong.one.until.api.gemini.text;
+package com.hjong.one.util.api.gemini.text;
 
 import com.alibaba.fastjson2.JSONObject;
 import com.alibaba.fastjson2.JSONWriter;

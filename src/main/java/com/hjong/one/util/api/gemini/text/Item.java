@@ -1,4 +1,4 @@
-package com.hjong.one.until.api.gemini.text;
+package com.hjong.one.util.api.gemini.text;
 
 import lombok.Data;
 import lombok.experimental.Accessors;

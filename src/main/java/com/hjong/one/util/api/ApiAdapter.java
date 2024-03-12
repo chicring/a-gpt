@@ -1,7 +1,7 @@
-package com.hjong.one.until.api;
+package com.hjong.one.util.api;
 
 import com.hjong.one.entity.Channel;
-import com.hjong.one.until.api.openai.text.OpenAiReq;
+import com.hjong.one.util.api.openai.text.OpenAiReq;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 
