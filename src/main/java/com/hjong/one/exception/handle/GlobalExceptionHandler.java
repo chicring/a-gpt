@@ -1,7 +1,9 @@
-package com.hjong.one.exception;
+package com.hjong.one.exception.handle;
 
 import com.hjong.one.entity.R;
+import com.hjong.one.exception.ServiceException;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -55,6 +57,15 @@ public class GlobalExceptionHandler {
         String res = e.getResponseBodyAsString();
         log.error("API error: {} {}", status, res);
         return R.fail(status.value(),res);
+    }
+
+    /**
+     * 参数校验异常处理
+     */
+    @ExceptionHandler(value = ConstraintViolationException.class)
+    public R<Void> handleConstraintViolationException(ConstraintViolationException e){
+        log.error("参数异常：{}",e.getMessage());
+        return R.fail(e.getMessage());
     }
 
 

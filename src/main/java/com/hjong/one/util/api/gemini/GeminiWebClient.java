@@ -39,7 +39,7 @@ public class GeminiWebClient implements ApiAdapter {
                 .path("/v1beta/models/"+ "gemini-1.0-pro-001" +":streamGenerateContent")
                 .queryParam("key", channel.getApiKey())
                 .toUriString();
-        HttpClient httpClient = HttpClient.create().proxy(proxy -> proxy.type(ProxyProvider.Proxy.HTTP).host("127.0.0.1").port(20171));
+//        HttpClient httpClient = HttpClient.create().proxy(proxy -> proxy.type(ProxyProvider.Proxy.HTTP).host("127.0.0.1").port(20171));
 
         return webClient.post()
                 .uri(url)
@@ -63,7 +63,6 @@ public class GeminiWebClient implements ApiAdapter {
             if(message.getRole().equals("assistant")){
                 message.setRole("model");
             }
-
             if(message.getRole().equals("system")){
 
                 message.setRole("user");
@@ -93,30 +92,6 @@ public class GeminiWebClient implements ApiAdapter {
                 item.setParts(List.of(new Part(message.getContent())));
                 contentsList.add(item);
             }
-
-//
-//            if(message.getRole().equals("assistant")){
-//                message.setRole("model");
-//            }
-//
-//            // 如果当前消息的角色是 "system" 并且这不是最后一条消息
-//            if (message.getRole().equals("system")) {
-//                message.setRole("user");
-//
-//                Item item = new Item().setRole(message.getRole());
-//                item.setParts(List.of(new Part(message.getContent())));
-//                contentsList.add(item);
-//                if(i == messagesCount -1){
-//                    continue;
-//                }
-//                Item newItem = new Item().setRole("model");
-//                newItem.setParts(List.of(new Part("好的")));
-//                contentsList.add(newItem);
-//            } else {
-//                Item item = new Item().setRole(message.getRole());
-//                item.setParts(List.of(new Part(message.getContent())));
-//                contentsList.add(item);
-//            }
         }
 
         log.info(contentsList.toString());

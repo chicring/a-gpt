@@ -23,10 +23,20 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public boolean validateKey(String ApiKey) {
-        if (apiKeyMapper.findByKey(ApiKey.substring("Bearer ".length())) != null){
+        ApiKey apiKey = apiKeyMapper.findByKey(ApiKey.substring("Bearer ".length()));
+        if (apiKey != null){
             /*
               有效日期和启用判断
              */
+            if(apiKey.getEnabled()){
+                Instant instant = Instant.now();
+                long timeStampSeconds = instant.getEpochSecond();
+                if (apiKey.getExpiresAt() >= timeStampSeconds){
+                 return true;
+                }else {
+                    throw new RuntimeException("key未启用或者已过期");
+                }
+            }
             return true;
         }else {
             log.info("key不存在或无效");
@@ -35,12 +45,12 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public String addKey(String name,Long expiresAt) {
+    public String addKey(String name,int expDay) {
 
         Instant instant = Instant.now();
         long timeStampSeconds = instant.getEpochSecond();
 
-        Instant future = instant.plus(99 * 365, ChronoUnit.DAYS);
+        Instant future = instant.plus(expDay, ChronoUnit.DAYS);
         long expiresStampSeconds = future.getEpochSecond();
 
         String key = keyUtil.generateKey();
@@ -59,6 +69,11 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public Integer deleteKey(String id) {
+        return apiKeyMapper.delete(id);
+    }
+
+    @Override
+    public Integer updateKey(ApiKey key){
         return null;
     }
 
