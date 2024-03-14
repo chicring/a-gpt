@@ -1,5 +1,6 @@
 package com.hjong.one.adapter.openai;
 
+import com.hjong.one.enums.ChatRoleEnum;
 import lombok.Data;
 
 import java.util.List;
@@ -18,6 +19,14 @@ public class OpenAiRequestBody {
     public static class Message{
         private String role;
         private String content;
+
+        public Message builder(String role, String content){
+            Message message = new Message();
+            message.setRole(role);
+            message.setContent(content);
+
+            return message;
+        }
     }
 
     private boolean stream;
