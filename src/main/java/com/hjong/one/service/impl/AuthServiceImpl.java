@@ -1,6 +1,7 @@
 package com.hjong.one.service.impl;
 
-import com.hjong.one.entity.ApiKey;
+import com.hjong.one.entity.DTO.ApiKey;
+import com.hjong.one.exception.ServiceException;
 import com.hjong.one.mapper.ApiKeyMapper;
 import com.hjong.one.service.AuthService;
 import com.hjong.one.util.key.KeyUtil;
@@ -34,13 +35,13 @@ public class AuthServiceImpl implements AuthService {
                 if (apiKey.getExpiresAt() >= timeStampSeconds){
                  return true;
                 }else {
-                    throw new RuntimeException("key未启用或者已过期");
+                    throw new ServiceException("key未启用或者已过期");
                 }
             }
             return true;
         }else {
-            log.info("key不存在或无效");
-            return false;
+            log.info("无效的key");
+            throw new ServiceException("无效的key");
         }
     }
 
@@ -62,18 +63,21 @@ public class AuthServiceImpl implements AuthService {
         if(apiKeyMapper.insert(apiKey) > 0){
             return key;
         }else {
-            throw new RuntimeException("生成key失败，请稍后再试。");
+            throw new ServiceException("生成key失败，请稍后再试。");
         }
 
     }
 
     @Override
-    public Integer deleteKey(String id) {
-        return apiKeyMapper.delete(id);
+    public String deleteKey(String id) {
+        if(apiKeyMapper.delete(id) > 0){
+            return "删除成功";
+        }
+        return null;
     }
 
     @Override
-    public Integer updateKey(ApiKey key){
+    public String updateKey(ApiKey key){
         return null;
     }
 

@@ -2,9 +2,12 @@ package com.hjong.one.util.api.gemini;
 
 
 import com.alibaba.fastjson2.JSONObject;
-import com.hjong.one.entity.Channel;
+import com.hjong.one.entity.DTO.Channel;
 import com.hjong.one.util.api.ApiAdapter;
-import com.hjong.one.util.api.gemini.text.*;
+import com.hjong.one.util.api.gemini.text.GeminiReq;
+import com.hjong.one.util.api.gemini.text.GenerationConfig;
+import com.hjong.one.util.api.gemini.text.Item;
+import com.hjong.one.util.api.gemini.text.Part;
 import com.hjong.one.util.api.openai.text.OpenAiChoices;
 import com.hjong.one.util.api.openai.text.OpenAiMessage;
 import com.hjong.one.util.api.openai.text.OpenAiReq;
@@ -15,8 +18,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.UriComponentsBuilder;
 import reactor.core.publisher.Flux;
-import reactor.netty.http.client.HttpClient;
-import reactor.netty.transport.ProxyProvider;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,18 +28,17 @@ public class GeminiWebClient implements ApiAdapter {
     WebClient webClient;
 
     @Override
-    public Flux<String> getResponse(Channel channel, OpenAiReq openAiReq) {
-
-//        String url = UriComponentsBuilder.fromHttpUrl(channel.getBaseUrl())
-//                .path("/v1beta/models/"+ channel.getModels() +":streamGenerateContent")
-//                .queryParam("key", channel.getApiKey())
-//                .toUriString();
-
+    public Flux<String> StreamResponse(Channel channel, OpenAiReq openAiReq) {
 
         String url = UriComponentsBuilder.fromHttpUrl(channel.getBaseUrl())
-                .path("/v1beta/models/"+ "gemini-1.0-pro-001" +":streamGenerateContent")
+                .path("/v1beta/models/"+ channel.getModel() +":streamGenerateContent")
                 .queryParam("key", channel.getApiKey())
                 .toUriString();
+
+//        String url = UriComponentsBuilder.fromHttpUrl(channel.getBaseUrl())
+//                .path("/v1beta/models/"+ "gemini-1.0-pro-001" +":streamGenerateContent")
+//                .queryParam("key", channel.getApiKey())
+//                .toUriString();
 //        HttpClient httpClient = HttpClient.create().proxy(proxy -> proxy.type(ProxyProvider.Proxy.HTTP).host("127.0.0.1").port(20171));
 
         return webClient.post()
@@ -94,7 +94,6 @@ public class GeminiWebClient implements ApiAdapter {
             }
         }
 
-        log.info(contentsList.toString());
         return new GeminiReq().setContents(contentsList)
                 .setGenerationConfig(
                         new GenerationConfig().setTemperature(openAiReq.getTemperature())

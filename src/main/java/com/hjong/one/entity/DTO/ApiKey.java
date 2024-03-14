@@ -1,4 +1,4 @@
-package com.hjong.one.entity;
+package com.hjong.one.entity.DTO;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,6 +14,7 @@ public class ApiKey {
     private String name;
     private String apiKey;
     private Boolean enabled;
+    private int userId;
     private Long createdAt;
     private Long expiresAt;
 }

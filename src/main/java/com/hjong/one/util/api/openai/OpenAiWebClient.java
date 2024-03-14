@@ -1,9 +1,8 @@
 package com.hjong.one.util.api.openai;
 
-import com.hjong.one.entity.Channel;
+import com.hjong.one.entity.DTO.Channel;
 import com.hjong.one.util.api.ApiAdapter;
 import com.hjong.one.util.api.openai.text.OpenAiReq;
-import com.hjong.one.util.api.openai.text.OpenAiResp;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -19,7 +18,7 @@ public class OpenAiWebClient implements ApiAdapter {
     WebClient webClient;
 
     @Override
-    public Flux<String> getResponse(Channel channel, OpenAiReq openAiReq) {
+    public Flux<String> StreamResponse(Channel channel, OpenAiReq openAiReq) {
 
 
         return webClient.post()

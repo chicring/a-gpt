@@ -1,6 +1,6 @@
 package com.hjong.one.mapper;
 
-import com.hjong.one.entity.ApiKey;
+import com.hjong.one.entity.DTO.ApiKey;
 import org.apache.ibatis.annotations.*;
 
 @Mapper

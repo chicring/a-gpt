@@ -1,5 +1,6 @@
 package com.hjong.one.exception.handle;
 
+import cn.dev33.satoken.exception.NotLoginException;
 import com.hjong.one.entity.R;
 import com.hjong.one.exception.ServiceException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -7,6 +8,7 @@ import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
@@ -62,11 +64,23 @@ public class GlobalExceptionHandler {
     /**
      * 参数校验异常处理
      */
-    @ExceptionHandler(value = ConstraintViolationException.class)
-    public R<Void> handleConstraintViolationException(ConstraintViolationException e){
-        log.error("参数异常：{}",e.getMessage());
-        return R.fail(e.getMessage());
+    @ExceptionHandler(value = {ConstraintViolationException.class, MethodArgumentNotValidException.class})
+    public R<Void> handleConstraintViolationException(Exception e){
+        if(e instanceof ConstraintViolationException exception) {
+            log.error("参数异常：{}",e.getMessage());
+            return R.fail(400, "请求参数有误" + e.getMessage());
+        } else if(e instanceof MethodArgumentNotValidException exception){
+            if (exception.getFieldError() == null) return R.fail("未知错误");
+            log.error("参数异常：{}",exception.getFieldError().getDefaultMessage());
+            return R.fail(exception.getFieldError().getDefaultMessage());
+        }
+        return R.fail("未知错误");
     }
 
+    @ExceptionHandler(value = NotLoginException.class)
+    public R<Void> handleNotLoginException(NotLoginException e){
+        log.error(e.getMessage());
+        return R.fail("请先登录");
+    }
 
 }

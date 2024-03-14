@@ -1,7 +1,9 @@
-package com.hjong.one.entity;
+package com.hjong.one.entity.DTO;
 
 import lombok.Data;
+import lombok.experimental.Accessors;
 
+@Accessors(chain = true)
 @Data
 public class Channel {
     private Integer id;
@@ -11,6 +13,7 @@ public class Channel {
     private String apiKey;
     private String baseUrl;
     private String models;
+    private String model;
     private Integer priority;
     private Integer usage;
     private String proxyIp;

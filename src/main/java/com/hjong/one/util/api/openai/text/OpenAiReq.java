@@ -12,4 +12,6 @@ public class OpenAiReq {
     private int presence_penalty;
     private int frequency_penalty;
     private int top_p;
+    private Integer max_tokens;
+
 }
